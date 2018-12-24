@@ -15,47 +15,29 @@ This repository provides codes, pre-trained models, and dataset to implement ill
 The restricted computational color constancy is equivalent to illuminant color estimation problem. In this paper we proposed the **feature map reweight unit (ReWU)** to address this problem in an efficient and interpretable way. ReWU incorporates the high representational capacity of convolutional models as well as the great interpretability of statistics-based models, and helps achieve competitive accuracies on benchmark datasets with respect to prior state-of-the-art algorithms with only 1%~5% model size and 8%~20% computational cost. 
 
 
-
-<img src="figures/achromatic_pixels_distillation.png" width="640">
-
-<br>
-
-<img src="figures/ReWU_structure.png" width="640">
-
-<br>
-
 <img src="figures/feature_maps.gif" width="900">
+
 
 > **Top row:** ReWU in the input layer (hrchy_0). **Bottom row:** ReWU in the first conv layer (hrchy_1).  
 > **From left to right:** the input feature maps, the reweighting maps, and the output feature maps.  
 > Brighter pixels in the middle images have stronger impact on inferring the illuminant color. Tested with model `.\pretrained_models\MultiCam\Hierarchy-1.h5`.
 
-More animations can be found [here](figures/comparison.gif) and [here](figures/local_estimates.gif) (~40MB each).
-
-<br>
+More animations can be found [here](figures/comparison.gif) and [here](figures/local_estimates.gif) (~30MB each).
 
 Besides the point estimates (illuminant color estimates), we also added a **confidence estimation branch** to the network such that the predictive uncertainties of the illuminant color estimates can be quantified, which provides useful clues for local estimates aggregation or multiple illumination estimation. In paper [Learning Confidence for Out-of-distribution Detection in Neural Networks](https://arxiv.org/abs/1802.04865), a good example was given to demonstrate the purpose of designing such a branch:
 
 > Imagine a test writing scenario. For this particular test, the student is given the option to ask for hints, but for each hint they receive, they also incur some small penalty. In order to optimize their score on the test, a good strategy would be to answer all of the questions that they are confident in without using the hints, and then to ask for hints to the questions that they are uncertain about in order to improve their chances of answering them correctly. At the end of the test, their level of confidence for each question can be approximated by counting the number of hints used. Applying this same strategy to neural networks gives 
 
-Here is the final architecture of our model:
 
-<br>
-
-<img src="figures/architecture.png" width="680">
-
-<br>
+# Pre-trained models
 
 We provide pre-trained models with and without the confidence estimation branch.
 
-The number of the hierarchical levels (the number of the blue Convolution blocks) can be flexibly chosen. In this repository we publish three types of network architecture: 1-Hierarchy, 2-Hierarchy, and 3-Hierarchy:
-
-<br>
-
-<img src="figures/architecture_details.png" width="900">
+The number of the hierarchical levels can be flexibly chosen. In this repository we publish three types of network architecture: 1-Hierarchy, 2-Hierarchy, and 3-Hierarchy:
 
 
-# Pre-trained models
+<img src="E:/Dropbox/Works/Python/publish/figures/architecture_details.png" width="900">
+
 
 Currently we publish models pre-trained on two dataset: the ColorChecker RECommended dataset and the MultiCam dataset.
 
@@ -101,13 +83,7 @@ Since images in the MultiCam dataset are device-independent, the models trained 
 
 <img src="figures/IMG_0463_local_estimates.png" width="640">
 
-<br>
 
-<img src="figures/feature_maps.png" width="840">
-
-<br>
-
-<img src="figures/confidences.png" width="540">
 
 
 # Usage
