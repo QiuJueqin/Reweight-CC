@@ -3,13 +3,11 @@
 This repository provides codes, pre-trained models, and dataset to implement illuminant estimation algorithm proposed in paper *[Color Constancy by Reweighting Image Feature Maps](https://arxiv.org/abs/1806.09248)*. One can evaluate models' performances on benchmark datasets, or even make inference on color-biased images downloaded from the Internet.
 
 
-
 # TL;DR
 
 1. (optional) Add some images to `.\sample_images\Flickr\`.
 2. Run `python cc.py -s 1 -g .\sample_images\Flickr\*`.
 3. Check the outputs in `.\sample_images\Flickr\white_balanced_images\`.
-
 
 
 # Introduction
@@ -32,7 +30,7 @@ The restricted computational color constancy is equivalent to illuminant color e
 > **From left to right:** the input feature maps, the reweighting maps, and the output feature maps.  
 > Brighter pixels in the middle images have stronger impact on inferring the illuminant color. Tested with model `.\pretrained_models\MultiCam\Hierarchy-1.h5`.
 
-More animations can be found [here](figures/comparison.gif) and [here](figures/local_estimates.gif) (~60MB each).
+More animations can be found [here](figures/comparison.gif) and [here](figures/local_estimates.gif) (~40MB each).
 
 <br>
 
@@ -55,7 +53,6 @@ The number of the hierarchical levels (the number of the blue Convolution blocks
 <br>
 
 <img src="figures/architecture_details.png" width="900">
-
 
 
 # Pre-trained models
@@ -91,7 +88,6 @@ Different photosensors record quite distinct pixel values given the same scenes.
 Since images in the MultiCam dataset are device-independent, the models trained on this dataset are also applicable to images in a wide variety that have gone through other post-processings. Feel free to use models trained on this dataset to make inference on images from other resources. The MultiCam dataset is available <a name="MultiCamLink">[here](https://1drv.ms/f/s!AniPeh_FlASDhG7QE6PJiy6s-RlE)</a>.
 
 
-
 # Visualization
 
 
@@ -112,7 +108,6 @@ Since images in the MultiCam dataset are device-independent, the models trained 
 <br>
 
 <img src="figures/confidences.png" width="540">
-
 
 
 # Usage
@@ -164,7 +159,6 @@ For the sake of simplicity, we currently only publish the routine for training *
 **Note II:** remember to use the labels provided by the ColorChecker RECommended dataset `.\sample_images\RECommended\ground-truth.txt` instead of those by Gehler-Shi dataset.
 
 **Note III:** we did not fix the random seeds during experiments. Try to train several times and you may get better result.
-
 
 
 # Q&A
@@ -235,7 +229,6 @@ We also tested our models on two PCs, here is the average inference time per ima
 ***A5:*** Very likely. In fact we did not spend much time tuning the models, e.g., the number of kernels in each layer, the initializers of the FC layers, the learning rate, the choice of optimizer, ... You may expect to get better results by appropriately tuning these hyperparameters. Besides, generating training data on-the-fly is also a good choice to improve the robustness of models, as done in [FC4](https://github.com/yuanming-hu/fc4).
 
 
-
 # BibTeX
 
 ```
@@ -244,10 +237,10 @@ We also tested our models on two PCs, here is the average inference time per ima
   title     = {Color Constancy by Reweighting Image Feature Maps},
   journal   = {CoRR},
   volume    = {abs/1806.09248},
-  year      = {2018}
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1806.09248}
 }
 ```
-
 
 
 # Acknowledgments
