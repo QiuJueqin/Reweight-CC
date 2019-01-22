@@ -36,18 +36,18 @@ We provide pre-trained models with and without the confidence estimation branch.
 The number of the hierarchical levels can be flexibly chosen. In this repository we publish three types of network architecture: 1-Hierarchy, 2-Hierarchy, and 3-Hierarchy:
 
 
-<img src="E:/Dropbox/Works/Python/publish/figures/architecture_details.png" width="900">
+<img src="figures/architecture_details.png" width="900">
 
 
 Currently we publish models pre-trained on two dataset: the ColorChecker RECommended dataset and the MultiCam dataset.
 
-## ColorChecker RECommended dataset
+### ColorChecker RECommended dataset
 
 The ColorChecker RECommended dataset is an updated version of the original [Gehler-Shi dataset](http://www.cs.sfu.ca/~colour/data/shi_gehler/), which re-generates a new "recommended" ground-truth set. See [this link](http://colorconstancy.com/?page_id=21#colorcheckerhemrit) for more details about this dataset.
 
 Images in the ColorChecker RECommended dataset are device-dependent, you should not expect the networks trained on this dataset would have good generalization on other datasets. In the Q&A we will discuss how to evaluate the estimation accuracies on this dataset.
 
-## MultiCam dataset
+### MultiCam dataset
 
 The MultiCam dataset contains over 3,000 full-resolution images from 11 camera models:
 
@@ -72,27 +72,26 @@ Since images in the MultiCam dataset are device-independent, the models trained 
 
 # Visualization
 
-
-<img src="figures/IMG_0565_local_estimates.png" width="640">
-
-<br>
-
-<img src="figures/IMG_0472_local_estimates.png" width="640">
+<img src="figures/IMG_0565_local_estimates.png" width="580">
 
 <br>
 
-<img src="figures/IMG_0463_local_estimates.png" width="640">
+<img src="figures/IMG_0472_local_estimates.png" width="580">
+
+<br>
+
+<img src="figures/IMG_0463_local_estimates.png" width="580">
 
 
 
 
 # Usage
 
-## Dependencies 
+### Dependencies 
 
 The project was tested in Python 3. Run `pip install -r requirements.txt` to install dependent packages.
 
-## Inference
+### Inference
 
 Basic usage: 
 ```
@@ -118,7 +117,7 @@ You can also place a `masks.txt` file in the the same directory of the test imag
 
 **Note II:** the training images in the MultiCam dataset do not include nighttime scenes, so feeding nighttime images into the model may produce poor results.
 
-## Training
+### Training
 
 For the sake of simplicity, we currently only publish the routine for training *naive* network(s). Taking the ColorChecker RECommended dataset for example:
 
@@ -139,8 +138,7 @@ For the sake of simplicity, we currently only publish the routine for training *
 
 # Q&A
 
-***Q1:***  Which ground-truth sets did you use?
-
+***Q1:***  Which ground-truth sets did you use?  
 ***A1:***
 
 * The ground-truth for the ColorChecker RECommended dataset is available [here](http://colorconstancy.com/wp-content/uploads/2018/09/groundtruthcoordinates.zip).
@@ -151,8 +149,7 @@ You can also find these files in the `.\sample_images\` directory.
 
 <br>
 
-***Q2:***  How to test the models on the ColorChecker RECommended dataset?
-
+***Q2:***  How to test the models on the ColorChecker RECommended dataset?  
 ***A2:***  We have provided several sample images in the `.\sample_images\RECommended\` directory. Just use
 
 ```
@@ -162,8 +159,7 @@ to make inference on these sample images.
 
 <br>
 
-***Q3:***  How to test the models on the MultiCam dataset?
-
+***Q3:***  How to test the models on the MultiCam dataset?  
 ***A3:***  Same as A2. Try
 
 ```
@@ -179,8 +175,7 @@ python cc.py -s 1 -g .\sample_images\Flickr\*
 
 <br>
 
-***Q4:***  What's the space and time complexities of your models?
-
+***Q4:***  What's the space and time complexities of your models?  
 ***A4:***  The numbers of model parameters and operations (multiply-adds) in one forward propagation are listed below, assuming the input images have fixed sizes of 224\*224 (without/with conf. est.):
 
 |         |    1-Hierarchy     |    2-Hierarchy     |    3-Hierarchy     |
@@ -200,8 +195,7 @@ We also tested our models on two PCs, here is the average inference time per ima
 
 <br>
 
-***Q5:*** Is it possible to get the results improved?
-
+***Q5:*** Is it possible to get the results improved?  
 ***A5:*** Very likely. In fact we did not spend much time tuning the models, e.g., the number of kernels in each layer, the initializers of the FC layers, the learning rate, the choice of optimizer, ... You may expect to get better results by appropriately tuning these hyperparameters. Besides, generating training data on-the-fly is also a good choice to improve the robustness of models, as done in [FC4](https://github.com/yuanming-hu/fc4).
 
 
