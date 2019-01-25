@@ -93,21 +93,46 @@ The project was tested in Python 3. Run `pip install -r requirements.txt` to ins
 
 ### Inference
 
-Basic usage: 
 ```
-python cc.py img_dir
+usage: cc.py [-h] [--dataset DB] [--level N] [--confidence]
+             [--gamma] [--save X] [--record] [--batch N]
+             img_dir
+
+Read image(s) and perform computational color constancy
+
+positional arguments:
+  img_dir                 dateset direcroty, use wildcard '*' to load 
+                          all images in the directory
+
+optional arguments:
+  -h, --help              show this help message and exit
+  --dataset DB, -d DB     the dataset of the pre-trained model:
+                          RECommended | MultiCam (default: MultiCam)
+                          Images in MultiCam dataset are device-independent,
+                          so models pre-trained on this dataset are also 
+                          suitable for images from other sources.
+  --level N, -l N         the number of hierarchical levels:
+                          1 | 3 (default: 3)
+  --confidece, -c         use network with the confidence estimation branch
+                          and aggregate local estimates based on their 
+                          confidence scores
+  --gamma, -g             apply the inverse gamma correction to the
+                          (non-linear) input image(s). Turn on this option
+                          only if the input image(s) has gone through
+                          post-processing (e.g., downloaded from Internet).
+  --save X, -s X          save option:
+                          0 | 1 | 2 | 3 | 4 (default: 1)
+                          0: save nothing (only for inference time test).
+                          1: save the corrected image(s) only
+                          2: save the corrected image(s) as well as the
+                             result(s) of the local estimates.
+                          3: save the corrected image(s) as well as the
+                             intermediate feature maps (may be slow).
+                          4: save all described above
+  --record, -r            write illuminant estimation results into a text
+                          file
+  --batch N, -b N         batch size (default: 64)
 ```
-Optional usages:
-
-* `-d/--dataset {'M', 'R'}`: select pre-trained model for MultiCam dataset or ColorChecker RECommended dataset.
-* `-l/--level {1, 3}`: select how many hierarchical levels to utilize.
-* `-c/--confidence`: use network with the confidence estimation branch.
-* `-g/--gamma`: apply the inverse gamma correction to the (non-linear) input image(s). Turn on this option only if the input image(s) has gone through gamma post-processing.
-* `-s/--save {0-4}`: visualization option. Use `-s 4` to save all visualization figures, or use `-s 1` to save only the white-balanced images.
-* `-r/--record`: turn on this option to write results into a text file.
-* `-b/--batch N`: manually set the batch size to N. The default is 64. Decrease it if encounter memory allocations issue.
-
-Don't forget to use `python cc.py -h` to print more help messages.
 
 When a text file named `ground-truth.txt` is detected in the same directory of the test images, the *evaluation mode* would be automatically activated, in which angular errors between the estimates and the ground-truth would be calculated. A template of `ground-truth.txt` can be found [here](sample_images/RECommended/ground-truth.txt).
 
@@ -125,7 +150,29 @@ For the sake of simplicity, we currently only publish the routine for training *
 
 2. Download our pre-processed sub-images [here](https://1drv.ms/u/s!AniPeh_FlASDhUclWQ48Pm2DYkOX) and unzip it to `.\train\RECommended\imdb\` directory. Data augmentation had been done as described in the section IV-C of the paper.
 
-3. Run `python train.py` and wait for it to finish (may take hours or days, depending on your machine specs). Use option `-l/--level {1, 2, 3}` to select how many hierarchical levels to utilize. Type in `python train.py -h` for more help messages.
+3. Run `python train.py` and wait for it to finish (may take hours or days, depending on your machine specs). 
+
+   ```
+   usage: train.py [-h] [--level N] [--fold X] [--epoch N] [--batch N]
+
+   Training networks on RECommended dataset
+
+   optional arguments:
+    -h, --help            show this help message and exit
+    --level N, -l N       the number of hierarchical levels:
+                          1 | 3 (default: 3)
+    --fold X, -f X        perform training-validation on specified
+                          fold(s) from 3-fold cross-validation:
+                          1 | 2 | 3 | 12 | ... | 123 (default: 123)
+                          1: use fold 1 as validation set and folds
+                             2,3 as training sets.
+                          ...
+                          123: complete 3-fold cross validation
+    --epoch N, -e N       number of training epochs (default: 500)
+    --batch N, -b N       batch size (default: 64)
+                          current training session DOES NOT support
+                          batch size smaller than 32
+   ```
 
 4. Run `python cvmerge.py .\train\RECommended\models\Hierarchy-X` to merge statistics from 3 folds of cross validation, where `X` is the hierarchical levels.
 

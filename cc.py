@@ -6,37 +6,34 @@ parser = argparse.ArgumentParser(description="Read image(s) and perform computat
                                              "See README and paper Color Constancy by Image Feature Maps Reweighting for more details.",
                                  formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument("img_path", type=str,
-                    help="The path of image(s) to be corrected. "
+                    help="dateset direcroty.\n"
                          "Use wildcard '*' to load all images in the directory (multi-image mode).\n"
                          "e.g., c:\\foo.jpg or sample_images\\MultiCam\\*")
-parser.add_argument("-d", "--dataset", type=str, choices=['M', 'R'], default='M',
-                    help="Select pre-trained model for MultiCam dataset or ColorChecker RECommended dataset.\n"
-                         "Images in MultiCam dataset are device-independent, "
-                         "so models pre-trained on this dataset are also suitable for images from other sources.\n"
-                         "-d M/--dataset M: MultiCam dataset (default).\n"
-                         "-d R/--dataset R: ColorChecker RECommended dataset.\n")
+parser.add_argument("-d", "--dataset", type=str, choices=['MultiCam', 'RECommended'], default='MultiCam',
+                    help="select pre-trained model for MultiCam dataset or ColorChecker RECommended dataset. (default: MultiCam)\n"
+                         "Images in MultiCam dataset are device-independent,\n"
+                         "so models pre-trained on this dataset are also suitable for images from other sources.\n")
 parser.add_argument("-l", "--level", type=int, choices=[1, 3], default=3,
-                    help="Select how many hierarchical levels to utilize.\n"
-                         "-l 1/--level 1: 1-Hierarchy.\n"
-                         "-l 3/--level 3: 3-Hierarchy (default).\n")
+                    help="the number of hierarchical levels. (default: 3)\n")
 parser.add_argument("-c", "--confidence",
-                    help="Use network with the confidence estimation branch and aggregate local estimates based on their confidence scores.",
+                    help="use network with the confidence estimation branch and aggregate local estimates based on their confidence scores.",
                     action="store_true")
 parser.add_argument("-g", "--gamma",
-                    help="Apply the inverse gamma correction to the (non-linear) input image(s).\n"
+                    help="apply the inverse gamma correction to the (non-linear) input image(s).\n"
                          "Turn on this option only if the input image(s) has gone through post-processing (e.g., downloaded from Internet).",
                     action="store_true")
 parser.add_argument("-s", "--save", type=int, choices=[0, 1, 2, 3, 4], default=0,
-                    help="-s 0/--save 0: save nothing (only for inference time test).\n"
-                         "-s 1/--save 1: save the corrected image(s) only (default).\n"
+                    help="save option. (default: 1)\n"
+                    	 "-s 0/--save 0: save nothing (only for inference time test).\n"
+                         "-s 1/--save 1: save the corrected image(s) only.\n"
                          "-s 2/--save 2: save the corrected image(s) as well as the result(s) of the local estimates.\n"
                          "-s 3/--save 3: save the corrected image(s) as well as the intermediate feature maps (may be slow).\n"
                          "-s 4/--save 4: save all described above.")
 parser.add_argument("-r", "--record",
-                    help="Write illuminant estimation results into a text file.",
+                    help="write illuminant estimation results into a text file.",
                     action="store_true")
 parser.add_argument("-b", "--batch", type=int, metavar='N', default=64,
-                    help="-b N/--batch N: manually set the batch size to N. The default is 64.\n"
+                    help="-b N/--batch N: batch size (default: 64).\n"
                          "Decrease it if encounter memory allocations issue.")
 args = parser.parse_args()
 
