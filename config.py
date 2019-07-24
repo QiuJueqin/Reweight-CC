@@ -2,7 +2,7 @@ def get_dataset_config(dataset):
     db_config = {'patches': 18,
                  'patch_size': (224, 224),
                  'confidence_threshold': 0.5}
-    if dataset == 'R':
+    if dataset == 'RECommended':
         db_config['dataset'] = r'ColorChecker RECommended'
         db_config['model_dir'] = r'pretrained_models\RECommended'
         db_config['input_bits'] = 16
@@ -12,7 +12,7 @@ def get_dataset_config(dataset):
         db_config['color_correction_matrix'] = [[1.7494, -0.8470, 0.0976],
                                                 [-0.1565, 1.4380, -0.2815],
                                                 [0.0786, -0.5070, 1.4284]]
-    else:
+    elif dataset == 'MultiCam':
         db_config['dataset'] = r'MultiCam'
         db_config['model_dir'] = r'pretrained_models\MultiCam'
         db_config['input_bits'] = 8

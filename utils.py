@@ -330,3 +330,76 @@ def write_statistics(record_file_path, angular_error_statistics):
                                                  'angular_errors_best_quarter': angular_errors_best_quarter,
                                                  'angular_errors_worst_quarter': angular_errors_worst_quarter,
                                                  'nb_imgs': len(angular_error_statistics)}))
+
+
+def convert_back(record_file_path):
+    """
+    convert estimated illuminant colors (and the ground truth, if necessary) back into individual camera color spaces
+    such that the angular errors could be more comparable with those in other literatures.
+    THIS FUNCTION WORKS ONLY FOR MULTICAM DATASET!
+    :param record_file_path: text file path, same as that in write_statistics function
+    :return: None
+    """
+    record_file_path_cam_colorspace = record_file_path.replace('.txt', '_camcolorspace.txt')
+    errors_in_cam_colorspace = []
+
+    with open(record_file_path, "r") as f:
+        for line in f:
+            [img_path, groundtruth, prediction] = get_line_info(line)
+            if not line: break
+            ccm = get_ccm(get_camera_model(img_path))
+            groundtruth_in_cam_colorspace = groundtruth * ccm^(-1)
+            prediction_in_cam_colorspace = prediction * ccm^(-1)
+            errors_in_cam_colorspace.append(angular_error(groundtruth_in_cam_colorspace, prediction_in_cam_colorspace))
+            write_records(record_file_path_cam_colorspace,
+                          img_path,
+                          prediction_in_cam_colorspace,
+                          ground_truth=groundtruth_in_cam_colorspace,
+                          global_angular_error=errors_in_cam_colorspace[-1])
+    write_statistics(record_file_path_cam_colorspace, errors_in_cam_colorspace)
+
+
+def get_line_info(line):
+    s = line.split('\t')
+    if len(s) != 4:
+        return None
+    img_path = s[0]
+    prediction = [float(x) for x in re.split('(\d+\.?\d*)', s[1])[1:-1:2]]
+    groundtruth = [float(x) for x in re.split('(\d+\.?\d*)', s[2])[1:-1:2]]
+    return img_path, groundtruth, prediction
+
+
+def get_camera_model(img_name):
+    if '_' in img_name:
+        camera_model = img_name.split('_')[0]
+        camera_model = 'Canon5D' if camera_model == 'IMG'
+    elif '8D5U' in img_name:
+        camera_model = 'Canon1D'
+    else:
+        camera_model = 'Canon550D'
+
+
+def get_ccm(camera_model):
+    camera_models = ('Canon5D', 'Canon1D', 'Canon550D', 'Canon1DsMkIII',
+                     'Canon600D', 'FujifilmXM1', 'NikonD5200', 'OlympusEPL6',
+                     'PanasonicGX1', 'SamsungNX2000', 'SonyA57')
+    if camera_model not in camera_models:
+        return None
+    # extracted from dcraw.c
+    matrices = ((6347,-479,-972,-8297,15954,2480,-1968,2131,7649), # Canon 5D
+                (4374,3631,-1743,-7520,15212,2472,-2892,3632,8161), # Canon 1Ds
+                (6941,-1164,-857,-3825,11597,2534,-416,1540,6039),  # Canon 550D
+                (5859,-211,-930,-8255,16017,2353,-1732,1887,7448),  # Canon 1Ds Mark III
+                (6461,-907,-882,-4300,12184,2378,-819,1944,5931),   # Canon 600D
+                (10413,-3996,-993,-3721,11640,2361,-733,1540,6011), # FujifilmXM1
+                (8322,-3112,-1047,-6367,14342,2179,-988,1638,6394), # Nikon D5200
+                (8380,-2630,-639,-2887,10725,2496,-627,1427,5438),  # Olympus E-PL6
+                (6763,-1919,-863,-3868,11515,2684,-1216,2387,5879), # Panasonic GX1
+                (7557,-2522,-739,-4679,12949,1894,-840,1777,5311),  # SamsungNX2000
+                (5991,-1456,-455,-4764,12135,2980,-707,1425,6701))    # Sony SLT-A57
+    xyz2cam = np.asarray(matrices[camera_models.index(camera_model)])/10000
+    xyz2cam = xyz2cam.reshape(3, 3).T
+    linsRGB2XYZ = np.array((0.4124564, 0.3575761, 0.1804375),
+                           (0.2126729, 0.7151522, 0.0721750),
+                           (0.0193339, 0.1191920, 0.9503041))
+    return xyz2cam.dot(linsRGB2XYZ).inverse.T # camera2linsRGB matrix

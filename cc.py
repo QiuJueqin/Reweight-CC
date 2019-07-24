@@ -278,3 +278,8 @@ if __name__ == '__main__':
         write_statistics(record_file_path, angular_errors_statistics)
     if len(inference_times) > 1:
         print('Average inference time: {0:.0f}ms/image.'.format(1000 * np.mean(inference_times[1:])))
+    if args.dataset == 'MultiCam' and ground_truth_mode:
+        print('Converting linear sRGB values back into individual camera color spaces...')
+        convert_back(record_file_path)
+        print('Done. Check the file {0:s}'.format(record_file_path.replace('.txt', '_camcolorspace.txt')))
+
